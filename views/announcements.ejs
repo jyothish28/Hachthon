@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements - Hackathon Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #f85454);
+            min-height: 100vh;
+            padding-top: 80px;
+            color: #fff;
+        }
+
+        nav {
+            background: linear-gradient(135deg, #6a11cb, #f85454);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        nav h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul li {
+            margin: 0 1rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #cbd5e1;
+        }
+
+        .profile-icon {
+            position: relative;
+        }
+
+        .profile-icon img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 0.8rem 1.2rem;
+            text-decoration: none;
+            color: #333;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-section {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .form-section label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #34495e;
+        }
+
+        .form-section textarea, .form-section select, .form-section input[type="file"] {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-section button {
+            background: #6a11cb;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .form-section button:hover {
+            background: #f85454;
+        }
+
+        .announcements-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .announcement-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .announcement-card p {
+            color: #34495e;
+            margin-bottom: 0.5rem;
+        }
+
+        .announcement-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+
+        .announcement-card video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .success-message {
+            color: #2ecc71;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                background-color: #2563eb;
+                position: absolute;
+                top: 60px;
+                right: 0;
+                width: 200px;
+                display: none;
+            }
+
+            nav ul.show {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+                cursor: pointer;
+                font-size: 1.5rem;
+            }
+        }
+
+        .menu-toggle {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>Hackathon Platform</h1>
+        <div class="menu-toggle">☰</div>
+        <ul>
+            <li><a href="<%= user.role === 'organizer' ? '/organizer' : '/participant' %>">Home</a></li>
+            <% if (user.role === 'organizer') { %>
+                <li><a href="/addEvent">Event Management</a></li>
+                <li><a href="/hosting">Updated Events</a></li>
+                <li><a href="/announcements">Announcements</a></li>
+            <% } %>
+            <li class="profile-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Profile" id="profileIcon">
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="/profile">Profile</a>
+                    <a href="/logout">Logout</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h2>Announcements</h2>
+
+        <% if (error) { %>
+            <div class="error-message"><%= error %></div>
+        <% } %>
+        <% if (success) { %>
+            <div class="success-message"><%= success %></div>
+        <% } %>
+
+        <div class="form-section">
+            <form action="/announcements" method="POST" enctype="multipart/form-data">
+                <label for="content">Announcement Content:</label>
+                <textarea id="content" name="content" rows="4" required placeholder="Write your announcement here..."></textarea>
+
+                <label for="event_id">Related Event (Optional):</label>
+                <select id="event_id" name="event_id">
+                    <option value="">-- Select an Event (Optional) --</option>
+                    <% if (events && events.length > 0) { %>
+                        <% events.forEach(event => { %>
+                            <option value="<%= event.event_id %>"><%= event.event_name %></option>
+                        <% }) %>
+                    <% } %>
+                </select>
+
+                <label for="image">Upload Image (Optional):</label>
+                <input type="file" id="image" name="image" accept="image/jpeg,image/png">
+
+                <label for="video">Upload Video (Optional):</label>
+                <input type="file" id="video" name="video" accept="video/mp4,video/webm">
+
+                <button type="submit">Post Announcement</button>
+            </form>
+        </div>
+
+        <div class="announcements-list">
+            <% if (!announcements || announcements.length === 0) { %>
+                <p>No announcements yet.</p>
+            <% } else { %>
+                <% announcements.forEach(announcement => { %>
+                    <div class="announcement-card" data-announcement-id="<%= announcement.id %>">
+                        <button class="delete-btn" data-announcement-id="<%= announcement.id %>">Delete</button>
+                        <p><strong>Content:</strong> <%= announcement.content %></p>
+                        <% if (announcement.event_name) { %>
+                            <p><strong>Event:</strong> <%= announcement.event_name %></p>
+                        <% } %>
+                        <p><strong>Posted At:</strong> <%= new Date(announcement.created_at).toLocaleString() %></p>
+                        <% if (announcement.image_path) { %>
+                            <img src="/uploads/<%= announcement.image_path.split('/').pop() %>" alt="Announcement Image">
+                        <% } %>
+                        <% if (announcement.video_path) { %>
+                            <video controls>
+                                <source src="/uploads/<%= announcement.video_path.split('/').pop() %>" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        <% } %>
+                    </div>
+                <% }) %>
+            <% } %>
+        </div>
+    </div>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('nav ul');
+        const profileIcon = document.getElementById('profileIcon');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('show');
+        });
+
+        profileIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!profileIcon.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.style.display = 'none';
+            }
+        });
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', async () => {
+                const announcementId = button.getAttribute('data-announcement-id');
+                if (confirm('Are you sure you want to delete this announcement?')) {
+                    try {
+                        const response = await fetch(`/announcements/${announcementId}`, {
+                            method: 'DELETE',
+                            headers: { 'Accept': 'application/json' }
+                        });
+                        const data = await response.json();
+
+                        if (!response.ok) throw new Error(data.error || 'Failed to delete announcement');
+
+                        const card = button.closest('.announcement-card');
+                        card.remove();
+
+                        const successMessage = document.createElement('div');
+                        successMessage.className = 'success-message';
+                        successMessage.textContent = data.success || 'Announcement deleted successfully';
+                        document.querySelector('.container').insertBefore(successMessage, document.querySelector('.form-section'));
+                        setTimeout(() => successMessage.remove(), 3000);
+                    } catch (err) {
+                        console.error(err);
+                        const errorMessage = document.createElement('div');
+                        errorMessage.className = 'error-message';
+                        errorMessage.textContent = err.message;
+                        document.querySelector('.container').insertBefore(errorMessage, document.querySelector('.form-section'));
+                        setTimeout(() => errorMessage.remove(), 3000);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

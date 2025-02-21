@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registration Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Navbar Styles */
+        nav {
+            background: linear-gradient(135deg, #6a11cb, #f85454);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%; /* Set width to 100% */
+            position: fixed; /* Optional: makes navbar stick to top */
+            top: 0; /* Aligns to top when fixed */
+            left: 0; /* Ensures it starts from the left edge */
+            z-index: 1000; /* Ensures navbar stays above other content */
+        }
+
+        nav h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul li {
+            margin: 0 1rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #cbd5e1;
+        }
+
+        .profile-icon {
+            position: relative;
+        }
+
+        .profile-icon img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 0.8rem 1.2rem;
+            text-decoration: none;
+            color: #333;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Body Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #f85454);
+            padding: 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 80px; /* Added padding to prevent content overlap with fixed navbar */
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 1200px;
+            animation: fadeIn 0.5s ease-in-out;
+            margin-top: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+            font-size: 2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #34495e;
+            font-size: 1.1rem;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid #dfe6e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #6a11cb;
+            box-shadow: 0 0 8px rgba(106, 17, 203, 0.3);
+            outline: none;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 120px;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #6a11cb, #f85454);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(106, 17, 203, 0.4);
+        }
+
+        .success-message {
+            color: #27ae60;
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+            display: none;
+            animation: popIn 0.5s ease;
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .required::after {
+            content: ' *';
+            color: #e74c3c;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                background-color: #2563eb;
+                position: absolute;
+                top: 60px;
+                right: 0;
+                width: 200px;
+                display: none;
+            }
+
+            nav ul.show {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+                cursor: pointer;
+                font-size: 1.5rem;
+            }
+        }
+
+        .menu-toggle {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>Hackathon Platform</h1>
+        <div class="menu-toggle">☰</div>
+        <ul>
+            <li><a href="/organizer">Home</a></li>
+            <li><a href="/addEvent">Event Management</a></li>
+            <li><a href="/hosting">Updated Events</a></li>
+            <li><a href="/announcements">Announcements</a></li>
+            <li class="profile-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Profile Icon" id="profileIcon">
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="#">Profile</a>
+                    <a href="/logout">Logout</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="form-container">
+        <h2>Event Creation</h2>
+        
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="error-message"><%= error %></div>
+        <% } %>
+        
+        <% if (typeof success !== 'undefined' && success) { %>
+            <div class="success-message"><%= success %></div>
+        <% } %>
+
+        <form id="eventForm" action="/addEvent" method="POST">
+            <div class="form-group">
+                <label for="eventName" class="required">Event Name</label>
+                <input type="text" id="eventName" name="event_name" placeholder="Enter event name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="domain" class="required">Select Domain</label>
+                <select id="domain" name="event_domin" required>
+                    <option value="">-- Select Domain --</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="AI & ML">AI</option>
+                    <option value="Cybersecurity">Machine Learning</option>
+                    <option value="Data Science">Full Stack</option>
+                    <option value="Blockchain">Backend</option>
+                    <option value="Frontend">Frontend</option>
+                    <option value="DSA">DSA</option>
+                    <option value="Python">Python</option>
+                    <option value="Java">Java</option>
+                    <option value="C">C</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="eventDescription" class="required">Event Description</label>
+                <textarea id="eventDescription" name="event_description" placeholder="Describe the event..." required></textarea>
+            </div>
+
+
+            <div class="form-group">
+                <label for="eventDate" class="required">Event Date</label>
+                <input type="date" name="event_date" id="eventDate" required>
+            </div>
+
+            <div class="form-group">
+                <label for="registrationFee" class="required">Registration Fee ($)</label>
+                <input type="number" name="registration_fee" id="registrationFee" value="0.0" min="0" step="0.01" required>
+            </div>
+
+            <div class="form-group">
+                <label for="startDate" class="required">Registration Start Date</label>
+                <input type="date" name="registration_start_date" id="startDate" required>
+            </div>
+
+            <div class="form-group">
+                <label for="expiryDate" class="required">Registration Expiry Date</label>
+                <input type="date" name="registration_expiry_date" id="expiryDate" required>
+            </div>
+
+            <div class="form-group">
+                <label for="maxParticipants" class="required">Max Participants</label>
+                <input type="number" name="max_participants" id="maxParticipants" placeholder="Enter maximum participants" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="eventLocation" class="required">Event Location</label>
+                <input type="text" name="event_location" id="eventLocation" placeholder="Enter event location or 'Online'" required>
+            </div>
+
+            <button type="submit">Add Event</button>
+        </form>
+    </div>
+
+    <script>
+        // Dropdown menu toggle
+        const profileIcon = document.getElementById('profileIcon');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        
+        profileIcon.addEventListener('click', () => {
+            dropdownMenu.style.display = 
+                dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Menu toggle for mobile
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navUl = document.querySelector('nav ul');
+        
+        menuToggle.addEventListener('click', () => {
+            navUl.classList.toggle('show');
+        });
+
+        // Form validation
+        document.getElementById('eventForm').addEventListener('submit', function(e) {
+            const startDate = new Date(document.getElementById('startDate').value);
+            const expiryDate = new Date(document.getElementById('expiryDate').value);
+            const eventDate = new Date(document.getElementById('eventDate').value);
+
+            if (startDate >= expiryDate) {
+                e.preventDefault();
+                alert('Registration start date must be before expiry date');
+                return;
+            }
+
+            if (expiryDate >= eventDate) {
+                e.preventDefault();
+                alert('Registration expiry date must be before event date');
+                return;
+            }
+            alert('<%= success %>');
+        });
+    </script>
+</body>
+</html>

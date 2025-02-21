@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Submissions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #f85454);
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+        
+        nav {
+            background: linear-gradient(135deg, #6a11cb, #f85454);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        
+        nav h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        nav ul li {
+            margin: 0 1rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: #cbd5e1;
+        }
+        
+        .profile-icon {
+            position: relative;
+        }
+        
+        .profile-icon img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            z-index: 100;
+        }
+        
+        .dropdown-menu a {
+            display: block;
+            padding: 0.8rem 1.2rem;
+            text-decoration: none;
+            color: #333;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+        
+        .dropdown-menu a:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .events-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            text-transform: uppercase;
+        }
+        
+        .submission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .submission-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .submission-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .submission-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .submission-card p {
+            color: #34495e;
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+        
+        .submission-card a {
+            color: #6a11cb;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .submission-card a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            margin: 2rem 0;
+            font-size: 1.2rem;
+        }
+        
+        .no-submissions {
+            color: white;
+            text-align: center;
+            font-size: 1.2rem;
+            font-style: italic;
+            margin: 2rem 0;
+        }
+        
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                background-color: #2563eb;
+                position: absolute;
+                top: 60px;
+                right: 0;
+                width: 200px;
+                display: none;
+            }
+        
+            nav ul.show {
+                display: flex;
+            }
+        
+            .menu-toggle {
+                display: block;
+                cursor: pointer;
+                font-size: 1.5rem;
+            }
+            
+            .submission-card {
+                padding: 1rem;
+            }
+        }
+        
+        .menu-toggle {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>Hackathon Platform</h1>
+        <div class="menu-toggle">☰</div>
+        <ul>
+            <li><a href="<%= user.role === 'organizer' ? '/organizer' : '/participant' %>">Home</a></li>
+            <li><a href="/events">Event Registration</a></li>
+            <li><a href="/submissions/list">Submissions</a></li>
+            <li><a href="/registered">Registered Events</a></li>
+            <li class="profile-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Profile" id="profileIcon">
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="/profile">Profile</a>
+                    <a href="/logout">Logout</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="events-container">
+        <h2>My Submissions</h2>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="error-message"><%= error %></div>
+        <% } %>
+
+        <% if (!submissions || submissions.length === 0) { %>
+            <p class="no-submissions">You haven't submitted any projects yet.</p>
+        <% } else { %>
+            <div class="submission-grid">
+                <% submissions.forEach(submission => { %>
+                    <div class="submission-card">
+                        <h3><%= submission.event_name || 'Unknown Event' %></h3>
+                        <p><strong>Project URL:</strong> 
+                            <a href="<%= submission.project_url %>" target="_blank">
+                                <%= submission.project_url %>
+                            </a>
+                        </p>
+                        <p><strong>Description:</strong> <%= submission.project_description || 'No description' %></p>
+                        <% if (submission.file_path) { %>
+                            <p><strong>File:</strong> 
+                                <a href="/uploads/<%= submission.file_path.split('/').pop() %>" download>
+                                    Download Submission
+                                </a>
+                            </p>
+                        <% } %>
+                        <p><strong>Submitted At:</strong> 
+                            <%= submission.submitted_at ? new Date(submission.submitted_at).toLocaleString() : 'TBD' %>
+                        </p>
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+    </div>
+
+    <script>
+        const profileIcon = document.getElementById('profileIcon');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navUl = document.querySelector('nav ul');
+        
+        profileIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.style.display = 
+                dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        menuToggle.addEventListener('click', () => {
+            navUl.classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!profileIcon.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

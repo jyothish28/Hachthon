@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackathon Submission</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #f85454);
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        nav {
+            background: linear-gradient(135deg, #6a11cb, #f85454);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        nav h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul li {
+            margin: 0 1rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #cbd5e1;
+        }
+
+        .profile-icon {
+            position: relative;
+        }
+
+        .profile-icon img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 0.8rem 1.2rem;
+            text-decoration: none;
+            color: #333;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f0f0f0;
+        }
+
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .white-box {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"],
+        textarea,
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            font-size: 16px;
+        }
+
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        input[type="file"] {
+            padding: 0;
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            padding: 8px;
+            border: none;
+            background-color: #6a11cb;
+            color: white;
+            border-radius: 4px 0 0 4px;
+            cursor: pointer;
+        }
+
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background-color: #f85454;
+        }
+
+        .file-preview {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .file-preview span {
+            margin-right: 10px;
+            color: #34495e;
+        }
+
+        .remove-file {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .remove-file:hover {
+            background: #c0392b;
+        }
+
+        button[type="submit"] {
+            background: linear-gradient(135deg, #6a11cb, #f85454);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0;
+            transition: background 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background: #f85454;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .success-message {
+            color: #27ae60;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                background-color: #6a11cb;
+                position: absolute;
+                top: 60px;
+                right: 0;
+                width: 200px;
+                display: none;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            nav ul.show {
+                display: flex;
+            }
+
+            nav ul li {
+                margin: 0.8rem 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .form-container {
+                margin: 20px auto;
+                padding: 10px;
+            }
+
+            .white-box {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>Hackathon Platform</h1>
+        <div class="menu-toggle">☰</div>
+        <ul>
+            <li><a href="<%= user.role === 'organizer' ? '/organizer' : '/participant' %>">Home</a></li>
+            <li><a href="/events">Event Registration</a></li>
+            <li><a href="/submissions/list">Submissions</a></li>
+            <li><a href="/registered">Registered Events</a></li>
+            <li class="profile-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Profile Icon" id="profileIcon">
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="/profile">Profile</a>
+                    <a href="/logout">Logout</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="form-container">
+        <div class="white-box">
+            <h2>Hackathon Submission Form</h2>
+            
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="error-message"><%= error %></div>
+            <% } %>
+            
+            <% if (typeof success !== 'undefined' && success) { %>
+                <div class="success-message"><%= success %></div>
+            <% } %>
+
+            <form id="submissionForm" action="/submission" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="hackathon-id">Hackathon ID</label>
+                    <input type="text" id="hackathon-id" name="hackathon-id" value="<%= eventId %>" readonly required>
+                </div>
+                <div class="form-group">
+                    <label for="project-url">URL</label>
+                    <input type="text" id="project-url" name="project-url" placeholder="Enter Project URL" required>
+                </div>
+                <div class="form-group">
+                    <label for="project-description">Project Description</label>
+                    <textarea id="project-description" name="project-description" placeholder="Describe your project" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="project-submission">Project Submission</label>
+                    <input type="file" id="project-submission" name="project-submission">
+                    <div class="file-preview" id="filePreview" style="display: none;">
+                        <span id="fileName"></span>
+                        <button type="button" class="remove-file" onclick="removeFile()">Remove</button>
+                    </div>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('nav ul');
+        const profileIcon = document.getElementById('profileIcon');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const form = document.getElementById('submissionForm');
+        const fileInput = document.getElementById('project-submission');
+        const filePreview = document.getElementById('filePreview');
+        const fileNameSpan = document.getElementById('fileName');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('show');
+        });
+
+        profileIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!profileIcon.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.style.display = 'none';
+            }
+        });
+
+        // Handle file selection and preview
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files.length > 0) {
+                fileNameSpan.textContent = e.target.files[0].name;
+                filePreview.style.display = 'flex';
+            } else {
+                filePreview.style.display = 'none';
+            }
+        });
+
+        // Remove file function
+        function removeFile() {
+            fileInput.value = ''; // Clear the file input
+            filePreview.style.display = 'none'; // Hide the preview
+            fileNameSpan.textContent = ''; // Clear the file name
+        }
+
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('/submission', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.text();
+                    throw new Error(errorData || 'Submission failed');
+                }
+
+                const result = await response.text();
+                document.open();
+                document.write(result);
+                document.close();
+            } catch (error) {
+                console.error('Submission error:', error);
+                const errorDiv = document.querySelector('.error-message') || document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = error.message.includes('Failed to submit project') ? error.message : 'Failed to submit project: ' + error.message;
+                form.prepend(errorDiv);
+            }
+        });
+    </script>
+</body>
+</html>

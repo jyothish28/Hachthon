@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hosted Events - Hackathon Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #f85454);
+            min-height: 100vh;
+            padding-top: 80px;
+            color: #fff;
+        }
+
+        nav {
+            background: linear-gradient(135deg, #6a11cb, #f85454);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        nav h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul li {
+            margin: 0 1rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #cbd5e1;
+        }
+
+        .profile-icon {
+            position: relative;
+        }
+
+        .profile-icon img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 0.8rem 1.2rem;
+            text-decoration: none;
+            color: #333;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .events-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .event-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .event-card h3 {
+            color: #6a11cb;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-card p {
+            color: #34495e;
+            margin-bottom: 0.3rem;
+        }
+
+        .details-section {
+            margin-top: 2rem;
+            display: none;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .details-section.active {
+            display: block;
+        }
+
+        .participants-list, .submissions-list {
+            margin-top: 1rem;
+        }
+
+        .participants-list h4, .submissions-list h4 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            color: #34495e;
+        }
+
+        th {
+            background: #6a11cb;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        a {
+            color: #6a11cb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .no-data {
+            color: #34495e;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                background-color: #2563eb;
+                position: absolute;
+                top: 60px;
+                right: 0;
+                width: 200px;
+                display: none;
+            }
+
+            nav ul.show {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+                cursor: pointer;
+                font-size: 1.5rem;
+            }
+
+            table, th, td {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+        }
+
+        .menu-toggle {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>Hackathon Platform</h1>
+        <div class="menu-toggle">☰</div>
+        <ul>
+            <li><a href="<%= user.role === 'organizer' ? '/organizer' : '/participant' %>">Home</a></li>
+            <% if (user.role === 'organizer') { %>
+                <li><a href="/addEvent">Event Management</a></li>
+                <li><a href="/hosting">Updated Events</a></li>
+                <li><a href="/announcements">Announcements</a></li>
+            <% } %>
+            <li class="profile-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Profile" id="profileIcon">
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="/profile">Profile</a>
+                    <a href="/logout">Logout</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h2>Your Upcoming Events</h2>
+
+        <% if (error) { %>
+            <div class="error-message"><%= error %></div>
+        <% } %>
+
+        <% if (!events || events.length === 0) { %>
+            <p class="no-events">You have no upcoming events.</p>
+        <% } else { %>
+            <div class="events-list">
+                <% events.forEach(event => { %>
+                    <div class="event-card" data-event-id="<%= event.event_id %>">
+                        <h3><%= event.event_name %></h3>
+                        <p><strong>Date:</strong> <%= new Date(event.event_date).toLocaleString() %></p>
+                        <p><strong>Location:</strong> <%= event.event_location %></p>
+                        <p><strong>Max Participants:</strong> <%= event.max_participants %></p>
+                    </div>
+                <% }) %>
+            </div>
+
+            <div class="details-section" id="eventDetails">
+                <h3 id="selectedEventName"></h3>
+                <div class="participants-list">
+                    <h4>Registered Participants</h4>
+                    <table id="participantsTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody id="participantsContainer"></tbody>
+                    </table>
+                </div>
+                <div class="submissions-list">
+                    <h4>Submissions</h4>
+                    <table id="submissionsTable">
+                        <thead>
+                            <tr>
+                                <th>Participant</th>
+                                <th>Project URL</th>
+                                <th>Description</th>
+                                <th>File</th>
+                                <th>Submitted At</th>
+                            </tr>
+                        </thead>
+                        <tbody id="submissionsContainer"></tbody>
+                    </table>
+                </div>
+            </div>
+        <% } %>
+    </div>
+
+    <script>
+        const eventCards = document.querySelectorAll('.event-card');
+        const detailsSection = document.getElementById('eventDetails');
+        const selectedEventName = document.getElementById('selectedEventName');
+        const participantsContainer = document.getElementById('participantsContainer');
+        const submissionsContainer = document.getElementById('submissionsContainer');
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('nav ul');
+        const profileIcon = document.getElementById('profileIcon');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+
+        // Toggle mobile menu
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('show');
+        });
+
+        // Toggle dropdown menu
+        profileIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!profileIcon.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.style.display = 'none';
+            }
+        });
+
+        // Event card click handler
+        eventCards.forEach(card => {
+            card.addEventListener('click', async () => {
+                const eventId = card.getAttribute('data-event-id');
+                const eventName = card.querySelector('h3').textContent;
+
+                try {
+                    const response = await fetch(`/hosting/event/${eventId}`, {
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    const data = await response.json();
+
+                    if (!response.ok) throw new Error(data.error || 'Failed to fetch event details');
+
+                    // Update details section
+                    selectedEventName.textContent = eventName;
+                    detailsSection.classList.add('active');
+
+                    // Display participants in table
+                    participantsContainer.innerHTML = '';
+                    if (data.participants.length === 0) {
+                        participantsContainer.innerHTML = '<tr><td colspan="2" class="no-data">No participants registered yet.</td></tr>';
+                    } else {
+                        data.participants.forEach(participant => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${participant.name}</td>
+                                <td>${participant.email}</td>
+                            `;
+                            participantsContainer.appendChild(tr);
+                        });
+                    }
+
+                    // Display submissions in table
+                    submissionsContainer.innerHTML = '';
+                    if (data.submissions.length === 0) {
+                        submissionsContainer.innerHTML = '<tr><td colspan="5" class="no-data">No submissions yet.</td></tr>';
+                    } else {
+                        data.submissions.forEach(submission => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${submission.participant_name}</td>
+                                <td><a href="${submission.project_url}" target="_blank">${submission.project_url}</a></td>
+                                <td>${submission.project_description || 'No description'}</td>
+                                <td>${submission.file_path ? `<a href="/uploads/${submission.file_path.split('/').pop()}" download>Download</a>` : 'N/A'}</td>
+                                <td>${new Date(submission.submitted_at).toLocaleString()}</td>
+                            `;
+                            submissionsContainer.appendChild(tr);
+                        });
+                    }
+                } catch (err) {
+                    console.error(err);
+                    participantsContainer.innerHTML = `<tr><td colspan="2" class="error-message">${err.message}</td></tr>`;
+                    submissionsContainer.innerHTML = '';
+                    detailsSection.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
