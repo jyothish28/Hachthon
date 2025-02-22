@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/register.css"> <!-- Ensure this path matches your static setup -->
     <style>
+        /* Your existing styles remain unchanged */
         * {
             margin: 0;
             padding: 0;
@@ -153,6 +154,13 @@
             text-decoration: underline;
         }
 
+        .error-message {
+            color: rgb(219, 71, 71);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -182,7 +190,7 @@
             <p>Join the innovation. Sign up to get started.</p>
         </div>
         <div class="right-panel">
-            <form class="signup-form" action="/register" method="post">
+            <form class="signup-form" action="/register" method="post" onsubmit="return validateForm()">
                 <h2>Create Your Account</h2>
                 <div class="input-group">
                     <label for="role">Role</label>
@@ -198,6 +206,7 @@
                 <div class="input-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    <span class="error-message" id="email-error">Organizers must use an mbu email address.</span>
                 </div>
                 <div class="input-group">
                     <label for="password">Password</label>
@@ -220,11 +229,51 @@
     <script>
         const togglePassword = document.querySelector('.toggle-password');
         const passwordInput = document.querySelector('#password');
+        const roleSelect = document.querySelector('#role');
+        const emailInput = document.querySelector('#email');
+        const emailError = document.querySelector('#email-error');
 
+        // Password toggle functionality
         togglePassword.addEventListener('click', () => {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
             togglePassword.textContent = type === 'password' ? '👁️' : '👁️‍🗨️'; // Change icon based on state
+        });
+
+        // Form validation
+        function validateForm() {
+            const role = roleSelect.value;
+            const email = emailInput.value;
+
+            if (role === 'organizer' && !email.endsWith('@mbu.asia')) {
+                emailError.style.display = 'block';
+                emailInput.focus();
+                return false; // Prevent form submission
+            } else {
+                emailError.style.display = 'none';
+                return true; // Allow form submission
+            }
+        }
+
+        // Real-time validation on input change
+        emailInput.addEventListener('input', () => {
+            const role = roleSelect.value;
+            const email = emailInput.value;
+            if (role === 'organizer' && !email.endsWith('@mbu.asia')) {
+                emailError.style.display = 'block';
+            } else {
+                emailError.style.display = 'none';
+            }
+        });
+
+        // Update validation when role changes
+        roleSelect.addEventListener('change', () => {
+            const email = emailInput.value;
+            if (roleSelect.value === 'organizer' && !email.endsWith('@mbu.asia')) {
+                emailError.style.display = 'block';
+            } else {
+                emailError.style.display = 'none';
+            }
         });
     </script>
 </body>

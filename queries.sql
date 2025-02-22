@@ -1,3 +1,14 @@
+CREATE TABLE users(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    password VARCHAR(100),
+    role VARCHAR(50),
+);
+
+
+
+
 CREATE TABLE events (
     event_id SERIAL PRIMARY KEY,
     event_name VARCHAR(100) NOT NULL,
