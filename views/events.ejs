@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Available Events</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico">
     <style>
         * {
             margin: 0;
@@ -188,39 +189,46 @@
             box-shadow: none;
         }
 
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
         @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
             nav ul {
+                display: none;
                 flex-direction: column;
-                background-color: #2563eb;
                 position: absolute;
                 top: 60px;
                 right: 0;
                 width: 200px;
-                display: none;
+                background-color: #6a11cb;
             }
-        
+
             nav ul.show {
                 display: flex;
             }
-        
-            .menu-toggle {
-                display: block;
-                cursor: pointer;
-                font-size: 1.5rem;
+
+            nav ul li {
+                margin: 0.5rem 0;
+                width: 100%;
+                text-align: center;
             }
 
-            .event-card {
-                padding: 1rem;
+            .intro-section {
+                flex-direction: column;
+                padding: 20px;
             }
 
-            .register-btn {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
+            .content-section {
+                margin-left: 0;
+                margin-top: 20px;
             }
-        }
-        
-        .menu-toggle {
-            display: none;
         }
     </style>
 </head>
@@ -271,7 +279,7 @@
                         <p><strong>Location:</strong> <%= event.event_location || 'TBD' %></p>
                         <p><strong>Fee:</strong> 
                             <span class="highlight">
-                                $<%= event.registration_fee %>
+                                $<%= event.registration_fee || '0' %>
                             </span>
                         </p>
                         <p><strong>Participants:</strong> 
@@ -291,7 +299,7 @@
                             </button>
                         </form>
                     </div>
-                <% }); %>
+                <% }) %>
             </div>
         <% } %>
     </div>
@@ -302,14 +310,13 @@
         const menuToggle = document.querySelector('.menu-toggle');
         const navUl = document.querySelector('nav ul');
 
-        profileIcon.addEventListener('click', (e) => {
-            e.stopPropagation();  // Prevent click from bubbling to document
-            dropdownMenu.style.display = 
-                dropdownMenu.style.display === 'block' ? 'none' : 'block';
-        });
-
         menuToggle.addEventListener('click', () => {
             navUl.classList.toggle('show');
+        });
+
+        profileIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
         });
 
         document.addEventListener('click', (e) => {
@@ -317,9 +324,6 @@
                 dropdownMenu.style.display = 'none';
             }
         });
-
-        // Show success message as popup only if it exists
-        
     </script>
 </body>
 </html>

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hosted Events - Hackathon Platform</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico">
     <style>
         * {
             margin: 0;
@@ -202,35 +203,53 @@
             padding: 1rem;
         }
 
+        .no-events {
+            color: #fff;
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 2rem 0;
+        }
+
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
         @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
             nav ul {
+                display: none;
                 flex-direction: column;
-                background-color: #2563eb;
                 position: absolute;
                 top: 60px;
                 right: 0;
                 width: 200px;
-                display: none;
+                background-color: #6a11cb;
             }
 
             nav ul.show {
                 display: flex;
             }
 
-            .menu-toggle {
-                display: block;
-                cursor: pointer;
-                font-size: 1.5rem;
+            nav ul li {
+                margin: 0.5rem 0;
+                width: 100%;
+                text-align: center;
             }
 
-            table, th, td {
-                font-size: 0.9rem;
-                padding: 0.8rem;
+            .intro-section {
+                flex-direction: column;
+                padding: 20px;
             }
-        }
 
-        .menu-toggle {
-            display: none;
+            .content-section {
+                margin-left: 0;
+                margin-top: 20px;
+            }
         }
     </style>
 </head>
@@ -239,8 +258,8 @@
         <h1>Hackathon Platform</h1>
         <div class="menu-toggle">☰</div>
         <ul>
-            <li><a href="<%= user.role === 'organizer' ? '/organizer' : '/participant' %>">Home</a></li>
-            <% if (user.role === 'organizer') { %>
+            <li><a href="<%= user && user.role === 'organizer' ? '/organizer' : '/participant' %>">Home</a></li>
+            <% if (user && user.role === 'organizer') { %>
                 <li><a href="/addEvent">Event Management</a></li>
                 <li><a href="/hosting">Updated Events</a></li>
                 <li><a href="/announcements">Announcements</a></li>
@@ -258,7 +277,7 @@
     <div class="container">
         <h2>Your Upcoming Events</h2>
 
-        <% if (error) { %>
+        <% if (typeof error !== 'undefined' && error) { %>
             <div class="error-message"><%= error %></div>
         <% } %>
 
@@ -268,10 +287,10 @@
             <div class="events-list">
                 <% events.forEach(event => { %>
                     <div class="event-card" data-event-id="<%= event.event_id %>">
-                        <h3><%= event.event_name %></h3>
-                        <p><strong>Date:</strong> <%= new Date(event.event_date).toLocaleString() %></p>
-                        <p><strong>Location:</strong> <%= event.event_location %></p>
-                        <p><strong>Max Participants:</strong> <%= event.max_participants %></p>
+                        <h3><%= event.event_name || 'Unnamed Event' %></h3>
+                        <p><strong>Date:</strong> <%= event.event_date ? new Date(event.event_date).toLocaleString() : 'TBD' %></p>
+                        <p><strong>Location:</strong> <%= event.event_location || 'TBD' %></p>
+                        <p><strong>Max Participants:</strong> <%= event.max_participants || 'Unlimited' %></p>
                     </div>
                 <% }) %>
             </div>
@@ -357,14 +376,14 @@
 
                     // Display participants in table
                     participantsContainer.innerHTML = '';
-                    if (data.participants.length === 0) {
+                    if (!data.participants || data.participants.length === 0) {
                         participantsContainer.innerHTML = '<tr><td colspan="2" class="no-data">No participants registered yet.</td></tr>';
                     } else {
                         data.participants.forEach(participant => {
                             const tr = document.createElement('tr');
                             tr.innerHTML = `
-                                <td>${participant.name}</td>
-                                <td>${participant.email}</td>
+                                <td>${participant.name || 'Unknown'}</td>
+                                <td>${participant.email || 'N/A'}</td>
                             `;
                             participantsContainer.appendChild(tr);
                         });
@@ -372,17 +391,17 @@
 
                     // Display submissions in table
                     submissionsContainer.innerHTML = '';
-                    if (data.submissions.length === 0) {
+                    if (!data.submissions || data.submissions.length === 0) {
                         submissionsContainer.innerHTML = '<tr><td colspan="5" class="no-data">No submissions yet.</td></tr>';
                     } else {
                         data.submissions.forEach(submission => {
                             const tr = document.createElement('tr');
                             tr.innerHTML = `
-                                <td>${submission.participant_name}</td>
-                                <td><a href="${submission.project_url}" target="_blank">${submission.project_url}</a></td>
+                                <td>${submission.participant_name || 'Unknown'}</td>
+                                <td><a href="${submission.project_url || '#'}" target="_blank">${submission.project_url || 'No URL'}</a></td>
                                 <td>${submission.project_description || 'No description'}</td>
                                 <td>${submission.file_path ? `<a href="/uploads/${submission.file_path.split('/').pop()}" download>Download</a>` : 'N/A'}</td>
-                                <td>${new Date(submission.submitted_at).toLocaleString()}</td>
+                                <td>${submission.submitted_at ? new Date(submission.submitted_at).toLocaleString() : 'N/A'}</td>
                             `;
                             submissionsContainer.appendChild(tr);
                         });

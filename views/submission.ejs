@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hackathon Submission</title>
+    <link rel="icon" href="favicon.ico">
     <style>
         * {
             margin: 0;
@@ -221,37 +222,38 @@
         }
 
         @media (max-width: 768px) {
+            .menu-toggle {
+                display: block; /* Show hamburger on mobile */
+            }
+
             nav ul {
+                display: none; /* Hide menu by default on mobile */
                 flex-direction: column;
-                background-color: #6a11cb;
                 position: absolute;
                 top: 60px;
                 right: 0;
                 width: 200px;
-                display: none;
-                border-radius: 8px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                background-color: #6a11cb;
             }
 
             nav ul.show {
-                display: flex;
+                display: flex; /* Show menu when toggled */
             }
 
             nav ul li {
-                margin: 0.8rem 0;
+                margin: 0.5rem 0;
+                width: 100%;
+                text-align: center;
             }
 
-            .menu-toggle {
-                display: block;
-            }
-
-            .form-container {
-                margin: 20px auto;
-                padding: 10px;
-            }
-
-            .white-box {
+            .intro-section {
+                flex-direction: column;
                 padding: 20px;
+            }
+
+            .content-section {
+                margin-left: 0;
+                margin-top: 20px;
             }
         }
     </style>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Registration Form</title>
+    <link rel="icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -21,11 +22,11 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 100%; /* Set width to 100% */
-            position: fixed; /* Optional: makes navbar stick to top */
-            top: 0; /* Aligns to top when fixed */
-            left: 0; /* Ensures it starts from the left edge */
-            z-index: 1000; /* Ensures navbar stays above other content */
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
         nav h1 {
@@ -99,7 +100,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 80px; /* Added padding to prevent content overlap with fixed navbar */
+            padding-top: 80px;
         }
 
         .form-container {
@@ -206,31 +207,54 @@
             color: #e74c3c;
         }
 
-        /* Responsive */
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
         @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
             nav ul {
+                display: none;
                 flex-direction: column;
-                background-color: #2563eb;
                 position: absolute;
                 top: 60px;
                 right: 0;
                 width: 200px;
-                display: none;
+                background-color: #6a11cb;
             }
 
             nav ul.show {
                 display: flex;
             }
 
-            .menu-toggle {
-                display: block;
-                cursor: pointer;
-                font-size: 1.5rem;
+            nav ul li {
+                margin: 0.5rem 0;
+                width: 100%;
+                text-align: center;
             }
-        }
 
-        .menu-toggle {
-            display: none;
+            .intro-section {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .content-section {
+                margin-left: 0;
+                margin-top: 20px;
+            }
         }
     </style>
 </head>
@@ -261,7 +285,7 @@
         <% } %>
         
         <% if (typeof success !== 'undefined' && success) { %>
-            <div class="success-message"><%= success %></div>
+            <div class="success-message" style="display: block;"><%= success %></div>
         <% } %>
 
         <form id="eventForm" action="/addEvent" method="POST">
@@ -276,9 +300,9 @@
                     <option value="">-- Select Domain --</option>
                     <option value="Web Development">Web Development</option>
                     <option value="AI & ML">AI</option>
-                    <option value="Cybersecurity">Machine Learning</option>
-                    <option value="Data Science">Full Stack</option>
-                    <option value="Blockchain">Backend</option>
+                    <option value="Cybersecurity">Cybersecurity</option>
+                    <option value="Data Science">Data Science</option>
+                    <option value="Blockchain">Blockchain</option>
                     <option value="Frontend">Frontend</option>
                     <option value="DSA">DSA</option>
                     <option value="Python">Python</option>
@@ -292,7 +316,6 @@
                 <textarea id="eventDescription" name="event_description" placeholder="Describe the event..." required></textarea>
             </div>
 
-
             <div class="form-group">
                 <label for="eventDate" class="required">Event Date</label>
                 <input type="date" name="event_date" id="eventDate" required>
@@ -300,7 +323,7 @@
 
             <div class="form-group">
                 <label for="registrationFee" class="required">Registration Fee ($)</label>
-                <input type="number" name="registration_fee" id="registrationFee" value="0.0" min="0" step="0.01" required>
+                <input type="number" name="registration_fee" id="registrationFee" value="0.00" min="0" step="0.01" required>
             </div>
 
             <div class="form-group">
@@ -328,21 +351,24 @@
     </div>
 
     <script>
-        // Dropdown menu toggle
         const profileIcon = document.getElementById('profileIcon');
         const dropdownMenu = document.getElementById('dropdownMenu');
-        
-        profileIcon.addEventListener('click', () => {
-            dropdownMenu.style.display = 
-                dropdownMenu.style.display === 'block' ? 'none' : 'block';
-        });
-
-        // Menu toggle for mobile
         const menuToggle = document.querySelector('.menu-toggle');
         const navUl = document.querySelector('nav ul');
-        
+
         menuToggle.addEventListener('click', () => {
             navUl.classList.toggle('show');
+        });
+
+        profileIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!profileIcon.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.style.display = 'none';
+            }
         });
 
         // Form validation
@@ -362,7 +388,10 @@
                 alert('Registration expiry date must be before event date');
                 return;
             }
-            alert('<%= success %>');
+
+             if (typeof success !== 'undefined' && success) { 
+                alert('<%= success %>');
+             } 
         });
     </script>
 </body>

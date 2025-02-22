@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Announcements - Hackathon Platform</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico">
     <style>
         * {
             margin: 0;
@@ -207,30 +208,53 @@
             margin: 2rem 0;
         }
 
+        .no-announcements {
+            color: #fff;
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 2rem 0;
+        }
+
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
         @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
             nav ul {
+                display: none;
                 flex-direction: column;
-                background-color: #2563eb;
                 position: absolute;
                 top: 60px;
                 right: 0;
                 width: 200px;
-                display: none;
+                background-color: #6a11cb;
             }
 
             nav ul.show {
                 display: flex;
             }
 
-            .menu-toggle {
-                display: block;
-                cursor: pointer;
-                font-size: 1.5rem;
+            nav ul li {
+                margin: 0.5rem 0;
+                width: 100%;
+                text-align: center;
             }
-        }
 
-        .menu-toggle {
-            display: none;
+            .intro-section {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .content-section {
+                margin-left: 0;
+                margin-top: 20px;
+            }
         }
     </style>
 </head>
@@ -239,8 +263,8 @@
         <h1>Hackathon Platform</h1>
         <div class="menu-toggle">☰</div>
         <ul>
-            <li><a href="<%= user.role === 'organizer' ? '/organizer' : '/participant' %>">Home</a></li>
-            <% if (user.role === 'organizer') { %>
+            <li><a href="<%= user && user.role === 'organizer' ? '/organizer' : '/participant' %>">Home</a></li>
+            <% if (user && user.role === 'organizer') { %>
                 <li><a href="/addEvent">Event Management</a></li>
                 <li><a href="/hosting">Updated Events</a></li>
                 <li><a href="/announcements">Announcements</a></li>
@@ -258,10 +282,10 @@
     <div class="container">
         <h2>Announcements</h2>
 
-        <% if (error) { %>
+        <% if (typeof error !== 'undefined' && error) { %>
             <div class="error-message"><%= error %></div>
         <% } %>
-        <% if (success) { %>
+        <% if (typeof success !== 'undefined' && success) { %>
             <div class="success-message"><%= success %></div>
         <% } %>
 
@@ -275,7 +299,7 @@
                     <option value="">-- Select an Event (Optional) --</option>
                     <% if (events && events.length > 0) { %>
                         <% events.forEach(event => { %>
-                            <option value="<%= event.event_id %>"><%= event.event_name %></option>
+                            <option value="<%= event.event_id %>"><%= event.event_name || 'Unnamed Event' %></option>
                         <% }) %>
                     <% } %>
                 </select>
@@ -292,16 +316,16 @@
 
         <div class="announcements-list">
             <% if (!announcements || announcements.length === 0) { %>
-                <p>No announcements yet.</p>
+                <p class="no-announcements">No announcements yet.</p>
             <% } else { %>
                 <% announcements.forEach(announcement => { %>
                     <div class="announcement-card" data-announcement-id="<%= announcement.id %>">
                         <button class="delete-btn" data-announcement-id="<%= announcement.id %>">Delete</button>
-                        <p><strong>Content:</strong> <%= announcement.content %></p>
+                        <p><strong>Content:</strong> <%= announcement.content || 'No content' %></p>
                         <% if (announcement.event_name) { %>
                             <p><strong>Event:</strong> <%= announcement.event_name %></p>
                         <% } %>
-                        <p><strong>Posted At:</strong> <%= new Date(announcement.created_at).toLocaleString() %></p>
+                        <p><strong>Posted At:</strong> <%= announcement.created_at ? new Date(announcement.created_at).toLocaleString() : 'N/A' %></p>
                         <% if (announcement.image_path) { %>
                             <img src="/uploads/<%= announcement.image_path.split('/').pop() %>" alt="Announcement Image">
                         <% } %>
@@ -354,6 +378,14 @@
 
                         const card = button.closest('.announcement-card');
                         card.remove();
+
+                        const remainingCards = document.querySelectorAll('.announcement-card');
+                        if (remainingCards.length === 0) {
+                            const noAnnouncements = document.createElement('p');
+                            noAnnouncements.className = 'no-announcements';
+                            noAnnouncements.textContent = 'No announcements yet.';
+                            document.querySelector('.announcements-list').appendChild(noAnnouncements);
+                        }
 
                         const successMessage = document.createElement('div');
                         successMessage.className = 'success-message';

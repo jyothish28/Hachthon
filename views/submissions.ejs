@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Submissions</title>
+    <link rel="icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -165,34 +166,46 @@
             margin: 2rem 0;
         }
         
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+        
         @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
             nav ul {
+                display: none;
                 flex-direction: column;
-                background-color: #2563eb;
                 position: absolute;
                 top: 60px;
                 right: 0;
                 width: 200px;
-                display: none;
+                background-color: #6a11cb;
             }
-        
+
             nav ul.show {
                 display: flex;
             }
-        
-            .menu-toggle {
-                display: block;
-                cursor: pointer;
-                font-size: 1.5rem;
+
+            nav ul li {
+                margin: 0.5rem 0;
+                width: 100%;
+                text-align: center;
             }
-            
-            .submission-card {
-                padding: 1rem;
+
+            .intro-section {
+                flex-direction: column;
+                padding: 20px;
             }
-        }
-        
-        .menu-toggle {
-            display: none;
+
+            .content-section {
+                margin-left: 0;
+                margin-top: 20px;
+            }
         }
     </style>
 </head>
@@ -201,7 +214,7 @@
         <h1>Hackathon Platform</h1>
         <div class="menu-toggle">☰</div>
         <ul>
-            <li><a href="<%= user.role === 'organizer' ? '/organizer' : '/participant' %>">Home</a></li>
+            <li><a href="<%= user && user.role === 'organizer' ? '/organizer' : '/participant' %>">Home</a></li>
             <li><a href="/events">Event Registration</a></li>
             <li><a href="/submissions/list">Submissions</a></li>
             <li><a href="/registered">Registered Events</a></li>
@@ -230,8 +243,8 @@
                     <div class="submission-card">
                         <h3><%= submission.event_name || 'Unknown Event' %></h3>
                         <p><strong>Project URL:</strong> 
-                            <a href="<%= submission.project_url %>" target="_blank">
-                                <%= submission.project_url %>
+                            <a href="<%= submission.project_url || '#' %>" target="_blank">
+                                <%= submission.project_url || 'No URL provided' %>
                             </a>
                         </p>
                         <p><strong>Description:</strong> <%= submission.project_description || 'No description' %></p>
@@ -246,7 +259,7 @@
                             <%= submission.submitted_at ? new Date(submission.submitted_at).toLocaleString() : 'TBD' %>
                         </p>
                     </div>
-                <% }); %>
+                <% }) %>
             </div>
         <% } %>
     </div>

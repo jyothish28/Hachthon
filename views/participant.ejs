@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Participant Dashboard - Hackathon Platform</title>
+    <link rel="icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -126,13 +127,13 @@
         }
 
         .content-section h1 {
-            color: #e84343; /* Matches your inline style rgb(232, 67, 67) */
+            color: #e84343;
             font-size: 28px;
             margin-bottom: 1rem;
         }
 
         .content-section h1 span {
-            color: #6a11cb; /* Contrast for the user's name */
+            color: #6a11cb;
         }
 
         .content-section p {
@@ -208,25 +209,36 @@
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
 
+        /* Mobile Menu Styles */
+        .menu-toggle {
+            display: none; /* Hidden by default on larger screens */
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
         @media (max-width: 768px) {
+            .menu-toggle {
+                display: block; /* Show hamburger on mobile */
+            }
+
             nav ul {
+                display: none; /* Hide menu by default on mobile */
                 flex-direction: column;
-                background-color: #2563eb;
                 position: absolute;
                 top: 60px;
                 right: 0;
                 width: 200px;
-                display: none;
+                background-color: #6a11cb;
             }
 
             nav ul.show {
-                display: flex;
+                display: flex; /* Show menu when toggled */
             }
 
-            .menu-toggle {
-                display: block;
-                cursor: pointer;
-                font-size: 1.5rem;
+            nav ul li {
+                margin: 0.5rem 0;
+                width: 100%;
+                text-align: center;
             }
 
             .intro-section {
@@ -238,10 +250,6 @@
                 margin-left: 0;
                 margin-top: 20px;
             }
-        }
-
-        .menu-toggle {
-            display: none;
         }
     </style>
 </head>
@@ -264,7 +272,7 @@
         </ul>
     </nav>
 
-    <div ><h2>Welcome, <%= user.name %></h2></div>
+    <div><h2>Welcome, <%= user.name %></h2></div>
     <div class="container">
         <div class="intro-section">
             <div class="image-section">

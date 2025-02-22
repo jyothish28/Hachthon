@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Organizer Dashboard - Hackathon Platform</title>
+    <link rel="icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -159,17 +160,25 @@
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
 
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
         @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
             nav ul {
+                display: none;
                 flex-direction: column;
-                background-color: #2563eb;
                 position: absolute;
                 top: 60px;
                 right: 0;
                 width: 200px;
-                display: none;
-                border-radius: 8px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                background-color: #6a11cb;
             }
 
             nav ul.show {
@@ -177,13 +186,9 @@
             }
 
             nav ul li {
-                margin: 0.8rem 0;
-            }
-
-            .menu-toggle {
-                display: block;
-                cursor: pointer;
-                font-size: 1.5rem;
+                margin: 0.5rem 0;
+                width: 100%;
+                text-align: center;
             }
 
             .intro-section {
@@ -195,14 +200,6 @@
                 margin-left: 0;
                 margin-top: 20px;
             }
-
-            .welcome-header {
-                font-size: 1.5rem;
-            }
-        }
-
-        .menu-toggle {
-            display: none;
         }
     </style>
 </head>
@@ -232,7 +229,7 @@
 
     <div class="container">
         <% if (user) { %>
-            <h2 class="welcome-header">Welcome, <%= user.name %></h2>
+            <h2 class="welcome-header">Welcome, <%= user.name || 'Organizer' %></h2>
             <div class="intro-section">
                 <div class="image-section">
                     <img src="/hackthon_img.jpg" alt="Hackathon Image">
@@ -242,12 +239,12 @@
                     <p>
                         A hackathon is an event where individuals or teams collaborate intensively over a short period—often 24 to 48 hours—to develop innovative solutions, software, or products. It’s a space for creative minds, including developers, designers, and problem-solvers, to brainstorm, code, and prototype ideas that address specific challenges or explore new concepts. Hackathons encourage teamwork, rapid problem-solving, and out-of-the-box thinking, fostering an environment of innovation and learning.
                     </p>
-                    <!-- <% if (success) { %>
+                    <% if (typeof success !== 'undefined' && success) { %>
                         <p class="success-message"><%= success %></p>
                     <% } %>
-                    <% if (error) { %>
+                    <% if (typeof error !== 'undefined' && error) { %>
                         <p class="error-message"><%= error %></p>
-                    <% } %> -->
+                    <% } %>
                 </div>
             </div>
         <% } else { %>
@@ -268,7 +265,7 @@
             navLinks.classList.toggle('show');
         });
 
-        if (profileIcon) { // Only add listener if profileIcon exists
+        if (profileIcon && dropdownMenu) { // Check if elements exist before adding listeners
             profileIcon.addEventListener('click', (e) => {
                 e.stopPropagation();
                 dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
